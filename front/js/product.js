@@ -88,7 +88,7 @@ const addBtn = document.querySelector("#addToCart")
 
 //ecoute btn envoi panier
 addBtn.addEventListener("click", (event)=>{
-  event.preventDefault();
+  window.location.reload();/////////////////////////////////////////////////////////////////////////////////////
 
 // selection de l'id du formulaire
 const idColors = document.querySelector("#colors").value;

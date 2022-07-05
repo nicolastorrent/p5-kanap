@@ -1,7 +1,4 @@
 
-let productLocalStorage = JSON.parse(localStorage.getItem("product"));
-console.log(productLocalStorage);
-
 const productCart = document.querySelector("#cart__items")
 console.log(productCart);
 
@@ -116,6 +113,7 @@ function changeQuantity() {
 
   for (let i = 0; i < itemQuantity.length; i++) {
     itemQuantity[i].addEventListener("change", () => {
+      window.location.reload();////////////////////////////////////////////////////////////////////////////////////////////////
      // stock dans une variable la quantité
       let quantityValue = itemQuantity[i].value;
       //récupération de la quantité dans localstorage
@@ -149,9 +147,11 @@ const validFirstName = function (inputFirstName) {
   if (firstNameRegExp.test(inputFirstName.value)) {
     firstNameErrorMsg.innerHTML = "Prénom valide";
     firstNameErrorMsg.style.color = "green";
+    return true;
   }else{
     firstNameErrorMsg.innerHTML = "Prénom invalide";
     firstNameErrorMsg.style.color = "red";
+    return false;
   }
 };
 
@@ -168,9 +168,11 @@ const validLastName = function (inputLastName) {
   if (lastNameRegExp.test(inputLastName.value)) {
     lastNameErrorMsg.innerHTML = "Nom valide";
     lastNameErrorMsg.style.color = "green";
+    return true;
   }else{
     lastNameErrorMsg.innerHTML = "Nom invalide";
     lastNameErrorMsg.style.color = "red";
+    return false;
   }
 };
 
@@ -189,9 +191,11 @@ const validAddress = function (inputAddress) {
   if (addressRegExp.test(inputAddress.value)) {
     addressErrorMsg.innerHTML = "Adresse valide";
     addressErrorMsg.style.color = "green";
+    return true;
   }else{
     addressErrorMsg.innerHTML = "Adresse invalide";
     addressErrorMsg.style.color = "red";
+    return false;
   }
 };
 
@@ -207,9 +211,11 @@ const validCity = function (inputCity) {
   if (cityRegExp.test(inputCity.value)) {
     cityErrorMsg.innerHTML = "ville valide";
     cityErrorMsg.style.color = "green";
+    return true;
   }else{
     cityErrorMsg.innerHTML = "ville invalide";
     cityErrorMsg.style.color = "red";
+    return false; 
   }
 };
 
@@ -228,9 +234,11 @@ const validEmail = function (inputEmail) {
   if (emaiRegExp.test(inputEmail.value)) {
     emailErrorMsg.innerHTML = "Adresse valide";
     emailErrorMsg.style.color = "green";
+    return true;
   }else{
     emailErrorMsg.innerHTML = "Adresse non valide";
     emailErrorMsg.style.color = "red";
+    return false;
   }
 };
 
@@ -259,9 +267,8 @@ function postForm() {
       },
       products: productLocalStorage.map(product => product.Id)
     }
-
-
-    fetch("http://localhost:3000/api/products/order",{
+if (validFirstName(form.firstName) && validLastName(form.lastName) && validAddress(form.address) && validCity(form.city) && validEmail(form.email)) { 
+  fetch("http://localhost:3000/api/products/order",{
       method: 'POST',
       body: JSON.stringify(order),
       headers: {
@@ -271,15 +278,22 @@ function postForm() {
     })
       .then((response) => response.json())
       .then((data) => {
-        //window.location.href= "/front/html/confirmation.html" + "?orderId=" + data.orderId;
+       window.location.href= "/front/html/confirmation.html" + "?orderId=" + data.orderId;
+        localStorage.clear();
         console.log(data);
       })
       .catch((err) => {
         console.error(err);
       });
+}else{
+  alert ("Le formulaire de contact doit être correctement rempli pour passer la commande. \ud83d\ude2d");
+}
+
+    
 
      
 
   })
 }
 postForm();
+
