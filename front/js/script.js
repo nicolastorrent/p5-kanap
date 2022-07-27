@@ -1,17 +1,9 @@
-class Product{
-    constructor(jsonProduct){
-        jsonProduct && Object.assign(this, jsonProduct);
-    }
-}
-
-
-
 fetch("http://localhost:3000/api/products")
-.then(data => data.json())
-.then(jsonListProduct => {
-    console.log(jsonListProduct);
-    for (let jsonProduct of jsonListProduct) {
-        let product = new Product(jsonProduct);
+.then(res => res.json())
+.then(data => {
+    console.log(data);
+    for (let product of data) {
+      console.log(product);
         document.getElementById("items").innerHTML +=
         `<a href="./product.html?id=${product._id}">
         <article>

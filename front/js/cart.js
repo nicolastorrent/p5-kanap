@@ -1,25 +1,34 @@
-
-const productCart = document.querySelector("#cart__items")
-console.log(productCart);
-
+const productCart = document.querySelector("#cart__items");
+if (productLocalStorage === null) {
+  alert("Mince votre panier est vide sélectionner des articles à ajouter au panier")
+}
    //si plein 
-    let productHtml = [];
-    for (let i = 0; i < productLocalStorage.length; i++) {
-        productHtml = productHtml + `
-        <article class="cart__item" data-id="${productLocalStorage[i].id}" data-color="{product-color}">
+   const tablData = [];
+   for (let product of productLocalStorage) {
+    fetch("http://localhost:3000/api/products/" + product.Id)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        tablData.push(data);
+        console.log(tablData);
+        console.log(product);
+
+      productCart.innerHTML += 
+      `
+        <article class="cart__item" data-id="${product.id}" data-color="{product-color}">
                 <div class="cart__item__img">
-                  <img src=" ${productLocalStorage[i].image} " alt="Photographie d'un canapé">
+                  <img src=" ${product.image} " alt="Photographie d'un canapé">
                 </div>
                 <div class="cart__item__content">
                   <div class="cart__item__content__description">
-                    <h2>${productLocalStorage[i].name}</h2>
-                    <p>${productLocalStorage[i].colors}</p>
-                    <p>${productLocalStorage[i].price}€</p>
+                    <h2>${product.name}</h2>
+                    <p>${product.colors}</p>
+                    <p>${data.price}€</p>
                   </div>
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
                       <p>Qté : </p>
-                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${productLocalStorage[i].quantity}">
+                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
                     </div>
                     <div class="cart__item__content__settings__delete">
                       <p class="deleteItem">Supprimer</p>
@@ -28,45 +37,35 @@ console.log(productCart);
                 </div>
               </article>
         `
-        
-        productCart.innerHTML = productHtml; 
-        
-      } 
-
-
-//---------btn supprimer---------------
+        //---------btn supprimer---------------
 let deleteItem = document.querySelectorAll(".deleteItem");
 console.log(deleteItem);
 
 
 for (let i = 0; i < deleteItem.length; i++) {
-    deleteItem[i].addEventListener("click", (event) =>{
-        
-//Sélection du produit qui va être supprimer au clic   
+    deleteItem[i].addEventListener("click", () =>{
+   
         let deleTe =  productLocalStorage[i];
         console.log(deleTe);
-   
-//Créer et retourne un nouveau tableau contenant tous les éléments du tableau d'origine qui remplissent la condition de fonction callback
-//pour sélectionner élément à garder et supprimer l'élément de mon btn
         productLocalStorage = productLocalStorage.filter( p => p != deleTe)
-        console.log(productLocalStorage);
         localStorage.setItem("product", JSON.stringify(productLocalStorage));
-        window.location.href = "cart.html";
+        window.location.reload();
     }); 
 }
 
 
 
 
-//-------------total prix---------------------
-function total () {
+
+
+     //-------------total prix---------------------
+function totalPrice () {
 
   let totalPriceTabl = [];
-
 //prix dans panier 
-for (let i = 0; i < productLocalStorage.length; i++) {
-    let price = productLocalStorage[i].price * productLocalStorage[i].quantity;
-
+for (let i = 0; i < tablData.length && productLocalStorage; i++) {
+    let price = tablData[i].price * productLocalStorage[i].quantity;
+    console.log( tablData.length); 
     totalPriceTabl.push(price)
     console.log( totalPriceTabl);   
 }
@@ -75,34 +74,38 @@ for (let i = 0; i < productLocalStorage.length; i++) {
 const reducer = (acc, cur) => acc + cur;
 const totalPrice = totalPriceTabl.reduce(reducer);
 console.log(totalPrice);
-
 //affichage prix
-const totalInHtml= document.querySelector("#totalPrice")
-const priceInHtml =`${totalPrice}`;
-totalInHtml.innerHTML = priceInHtml;
+document.querySelector("#totalPrice").innerHTML = totalPrice;
+}
+totalPrice();
 
 
+
+
+
+
+    // ----------------total quantity------------------------
+function totalQuantity() {
+  
 let totalQuantityTabl = [];
-
 //quantité dans panier 
 for (let i = 0; i < productLocalStorage.length; i++) {
-    let quantity = productLocalStorage[i].quantity;
-    let nombre = /*parseInt(quantity)*/quantity;
+    let nombre = /*parseInt(quantity)*/productLocalStorage[i].quantity;;
 
     totalQuantityTabl.push(nombre)
-    console.log(totalQuantityTabl);  
-    
+    console.log(totalQuantityTabl);    
 }
 
+const reducer = (acc, cur) => acc + cur;
 const totalQuantity = totalQuantityTabl.reduce(reducer);
 console.log(totalQuantity);
-
 //affichage quantity
-const totalQInHtml= document.querySelector("#totalQuantity")
-const quantityInHtml =`${totalQuantity}`;
-totalQInHtml.innerHTML = quantityInHtml;
+document.querySelector("#totalQuantity").innerHTML = totalQuantity;
 }
-total();
+totalQuantity();
+
+
+
 
 
 
@@ -110,36 +113,36 @@ total();
 
 function changeQuantity() {
   let itemQuantity = document.querySelectorAll(".itemQuantity");
-
+console.log(itemQuantity);
   for (let i = 0; i < itemQuantity.length; i++) {
     itemQuantity[i].addEventListener("change", () => {
-      window.location.reload();////////////////////////////////////////////////////////////////////////////////////////////////
-     // stock dans une variable la quantité
-      let quantityValue = itemQuantity[i].value;
-      //récupération de la quantité dans localstorage
-      productLocalStorage[i].quantity = Number(quantityValue);
+      productLocalStorage[i].quantity = Number(itemQuantity[i].value);
       //appelle fonction pour que prix s'actualise 
-      total();
+      totalPrice();
+      totalQuantity();
       localStorage.setItem("product", JSON.stringify(productLocalStorage));
-
-    });
-    
+      window.location.reload();
+    });   
   }
 };
 changeQuantity();
 
+})};
 
 
 
+
+
+
+//-------------Validation Formulaires--------------------------------
 
 let form = document.querySelector(".cart__order__form");
-
 
 form.firstName.addEventListener("change", function () {
   validFirstName(this);
 });
 
-const validFirstName = function (inputFirstName) {
+function validFirstName (inputFirstName) {
   let firstNameRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
 
   let firstNameErrorMsg = inputFirstName.nextElementSibling;
@@ -160,7 +163,7 @@ form.lastName.addEventListener("change", function () {
   validLastName(this);
 });
 
-const validLastName = function (inputLastName) {
+function validLastName (inputLastName) {
   let lastNameRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
 
   let lastNameErrorMsg = inputLastName.nextElementSibling;
@@ -183,7 +186,7 @@ form.address.addEventListener("change", function () {
   validAddress(this);
 });
 
-const validAddress = function (inputAddress) {
+function validAddress (inputAddress) {
   let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
 
   let addressErrorMsg = inputAddress.nextElementSibling;
@@ -203,7 +206,7 @@ form.city.addEventListener("change", function () {
   validCity(this);
 });
 
-const validCity = function (inputCity) {
+function validCity (inputCity) {
   let cityRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
 
   let cityErrorMsg = inputCity.nextElementSibling;
@@ -226,7 +229,7 @@ form.email.addEventListener("change", function () {
   validEmail(this);
 });
 
-const validEmail = function (inputEmail) {
+function validEmail(inputEmail) {
   let emaiRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
 
   let emailErrorMsg = inputEmail.nextElementSibling;
@@ -249,12 +252,11 @@ function postForm() {
 
   submitOrder.addEventListener("click", (e) => {
     e.preventDefault();
-    console.log(e);
-    const firstName = document.getElementById('firstName').value;
-    const lastName = document.getElementById('lastName').value;
-    const address = document.getElementById('address').value;
-    const city = document.getElementById('city').value;
-    const email = document.getElementById('email').value;
+    const firstName = document.getElementById("firstName").value;
+    const lastName = document.getElementById("lastName").value;
+    const address = document.getElementById("address").value;
+    const city = document.getElementById("city").value;
+    const email = document.getElementById("email").value;
     
     
     const order = {
@@ -265,21 +267,20 @@ function postForm() {
         city: city,
         email: email,
       },
-      products: productLocalStorage.map(product => product.Id)
+      products: productLocalStorage.map(p => p.Id)
     }
 if (validFirstName(form.firstName) && validLastName(form.lastName) && validAddress(form.address) && validCity(form.city) && validEmail(form.email)) { 
   fetch("http://localhost:3000/api/products/order",{
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(order),
       headers: {
-        'Accept': 'application/json',
         "Content-Type": "application/json"
       }
     })
-      .then((response) => response.json())
+      .then((res) => res.json())
       .then((data) => {
        window.location.href= "/front/html/confirmation.html" + "?orderId=" + data.orderId;
-        localStorage.clear();
+       localStorage.clear();
         console.log(data);
       })
       .catch((err) => {
@@ -289,9 +290,6 @@ if (validFirstName(form.firstName) && validLastName(form.lastName) && validAddre
   alert ("Le formulaire de contact doit être correctement rempli pour passer la commande. \ud83d\ude2d");
 }
 
-    
-
-     
 
   })
 }

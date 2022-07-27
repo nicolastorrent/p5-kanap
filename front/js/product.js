@@ -1,22 +1,11 @@
-let items = document.querySelector(".item")
-const color = document.querySelector(".color")
+const id = new URL(window.location.href).searchParams.get("id"); // on récupére l'id avec les paramétres de l'url
 
-
-let url_courant  = document.location.href
-
-let id = url_courant.substring(32,url_courant.length)
-id = id.slice(id.length - 32, id.length)
-
-const url = "http://localhost:3000/api/products";
-const getData = () =>{
-    fetch(url + "/" + id)
+console.log(id);
+    fetch("http://localhost:3000/api/products" + "/" + id)
     .then((res) => res.json())
-    .then(function(data ){
+    .then(data =>{
         console.log(data);
-
-      
-
-        items.innerHTML =`
+        document.querySelector(".item").innerHTML =`
         <article>
         <div class="item__img">
           <img src="${data.imageUrl}" alt="Photographie d'un canapé">
@@ -55,46 +44,29 @@ const getData = () =>{
         </div>
       </article>`
 
-      // variable represente la balise select avec l'ID colors
-      let select = document.getElementById("colors")
+      //-------------choix de la couleur-------------
+      let listeColors = document.getElementById("colors")
 
-        //data.colors le tableau des couleur donc utiliser forEach pour fair une boucle 
-        //(colors)represente un element choix du nom pas imposer
-      data.colors.forEach((colors) => {
-         //document.creatElement permet de cree un element ici la balise <option> pour les option de la liste
-         // la variable let tagOption permet de stocker document.createElement("option")
+      data.colors.forEach(function(colors) {
          let tagOption = document.createElement("option");
-        //pour injecter les donner
-         tagOption.innerHTML = `${colors}`;
-         tagOption.value = `${colors}`;
-        //pour dire oi placer les donner de la balise option qui es un enfant de select
-         select.appendChild(tagOption);
+         tagOption.innerHTML = colors;
+         listeColors.appendChild(tagOption);
       });
 
 
 
-
-
 //--------------------------------gestion du panier ------------------------
-//recuperation des donner sélectionnées par l'utilisateur et envoie au panier 
-
-
-
-
-
 //selection btn ajout produit
 const addBtn = document.querySelector("#addToCart")
 
 
 //ecoute btn envoi panier
-addBtn.addEventListener("click", (event)=>{
-  window.location.reload();/////////////////////////////////////////////////////////////////////////////////////
+addBtn.addEventListener("click", (e)=>{
+  window.location.reload();
 
-// selection de l'id du formulaire
+
 const idColors = document.querySelector("#colors").value;
 const idQuantity = document.querySelector("#quantity").value;
-//const choiceColor = idColors.value;
-//const choiceQuantity =  idQuantity.value;
 
 if (idQuantity > 0 && idQuantity <=100 && idColors != "--SVP, choisissez une couleur --") {
 
@@ -103,13 +75,13 @@ if (idQuantity > 0 && idQuantity <=100 && idColors != "--SVP, choisissez une cou
     Id: id,
     name: data.name,
     image: data.imageUrl,
-    price: data.price,
     quantity: Number(idQuantity) 
   }
 console.log(optionProduct);
 
 
   //---------------------------local storage-------------------------------------------------------------
+  
   function saveBasket(basket) {
     localStorage.setItem("product",JSON.stringify(basket));
   }
@@ -123,6 +95,7 @@ console.log(optionProduct);
     }
   }
   
+  //ajout au panier
   function addBasket(optionProduct) {
     //si le produit est déja ajouté au panier
     let basket = getBasket();
@@ -130,10 +103,8 @@ console.log(optionProduct);
     if (foundProduct != undefined) {
       let newQuantity = parseInt(optionProduct.quantity) + parseInt(foundProduct.quantity);
       foundProduct.quantity = newQuantity;
-    //si le produit n'est pas encore ajouté au panier
     }else {
       basket.push(optionProduct);
-      
     }
   
     saveBasket(basket);
@@ -146,12 +117,9 @@ console.log(optionProduct);
 }
 
 });
-
-
-console.log(addBtn);
-
-      
+console.log(addBtn);      
+}).catch((error) =>{
+  alert("connexion impossible")
 })
      
-}
-getData();
+
