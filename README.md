@@ -16,8 +16,8 @@ console when the server starts, e.g. `Listening on port 3001`.
 
 Architecture générale
 L’application web sera composée de 4 pages :
-● Une page d’accueil montrant (de manière dynamique) tous les articles disponibles à la vente.
-● Une page “produit” qui affiche (de manière dynamique) les détails du produit sur
+● Une page d’accueil montrant (de manière dynamique) tous les articles disponibles à la vente. *
+● Une page “produit” qui affiche (de manière dynamique) les détails du produit sur *
 lequel l'utilisateur a cliqué depuis la page d’accueil. Depuis cette page, l’utilisateur
 peut sélectionner une quantité, une couleur, et ajouter le produit à son panier.
 ● Une page “panier”. Celle-ci contient plusieurs parties :
