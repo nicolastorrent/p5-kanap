@@ -1,4 +1,4 @@
-#![left 100%](https://github.com/thierry-laval/archives/blob/master/images/Logo_OpenClassrooms.png?raw=true) OpenClassrooms - Web Developer - E-commerce site in JavaScript
+# ![left 100%](https://github.com/thierry-laval/archives/blob/master/images/Logo_OpenClassrooms.png?raw=true) [OpenClassrooms - Web Developer - E-commerce site in JavaScript](https://openclassrooms.com/fr/paths/556/projects/675/assignment)
 
 
 ##  Project 5 - Build an e-commerce site in JavaScript "Kanap"
