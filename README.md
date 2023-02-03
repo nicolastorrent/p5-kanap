@@ -1,16 +1,16 @@
-# Kanap #
+#![left 100%](https://github.com/thierry-laval/archives/blob/master/images/Logo_OpenClassrooms.png?raw=true) OpenClassrooms - Web Developer - E-commerce site in JavaScript
 
-This is the front end and back end server for Project 5 of the Web Developer path.
 
-### Back end Prerequisites ###
+##  Project 5 - Build an e-commerce site in JavaScript "Kanap"
 
-You will need to have Node and `npm` installed locally on your machine.
+### Create dynamic interfaces
 
-### Back end Installation ###
+#### 🔨 Build an e-commerce website in JavaScript
 
-Clone this repo. From the "back" folder of the project, run `npm install`. You 
-can then run the server with `node server`. 
-The server should run on `localhost` with default port `3000`. If the
-server runs on another port for any reason, this is printed to the
-console when the server starts, e.g. `Listening on port 3001`.
+##### Skills assessed
 
+* Manage JavaScript events
+* Validate data from external sources
+* Create a test plan for an application
+* Interact with a web service with JavaScript
+* Comply with [functional and technical specifications](https://course.oc-static.com/projects/DWJ_FR_P5/DW+P5+-+Specifications+fonctionnelles.pdf)
